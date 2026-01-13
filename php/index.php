@@ -1,43 +1,57 @@
 <?php
+/**
+ * PRUEBA TÉCNICA – PHP + ORACLE
+ *
+ * Objetivo:
+ * - Leer código legado sin miedo
+ * - Detectar bugs lógicos (no sintácticos)
+ * - Entender comportamiento de Oracle (JOINs, NULLs)
+ * - Proponer una corrección mínima sin romper el sistema
+ *
+ * Escenario:
+ * Un usuario reporta que el listado de personas
+ * "a veces funciona, a veces no".
+ * Algunos registros no aparecen.
+ */
 
 $conn = oci_connect(
     getenv('DB_USER'),
     getenv('DB_PASS'),
-    getenv('DB_HOST') . ':' . getenv('DB_PORT') . '/XEPDB1',
+    getenv('DB_HOST') . ':' . getenv('DB_PORT') . '/' . getenv('DB_SERVICE'),
     'AL32UTF8'
 );
 
 if (!$conn) {
     $e = oci_error();
-    die('Error de conexión: ' . $e['message']);
+    die($e['message']);
 }
 
-echo "Conexión exitosa a la base de datos Oracle.<br>";
+$estado = 1;
 
-$sql = <<<SQL
+/**
+ * Consulta original del sistema
+ * Problema reportado:
+ * - Faltan registros
+ * - A veces aparecen, a veces no
+ */
+$sql = "
 SELECT
     p.id,
     p.nombre,
     c.descripcion
-FROM personas p
-LEFT JOIN categorias c
-       ON c.id = p.categoria_id
-WHERE p.estado = 1
+FROM PRUEBA.personas p
+LEFT JOIN PRUEBA.categorias c ON c.id = p.categoria_id
+WHERE p.estado = :estado
   AND c.activa = 1
-ORDER BY p.id
-SQL;
+";
 
 $stmt = oci_parse($conn, $sql);
+oci_bind_by_name($stmt, ':estado', $estado);
 oci_execute($stmt);
 
-echo "<h3>Listado de personas activas</h3>";
-
-while ($row = oci_fetch_array($stmt, OCI_ASSOC | OCI_RETURN_NULLS)) {
-    echo htmlspecialchars($row['NOMBRE']) .
-         ' - ' .
-         htmlspecialchars($row['DESCRIPCION'] ?? 'Sin categoría') .
-         "<br>";
-}
-
-oci_free_statement($stmt);
-oci_close($conn);
+/**
+ * Lectura de resultados
+ * El sistema solo muestra un nombre
+ */
+$row = oci_fetch_array($stmt, OCI_ASSOC);
+echo $row['NOMBRE'] ?? 'Sin resultados';

@@ -11,6 +11,12 @@ services:
       - "1521:1521"
     volumes:
       - oracle_data:/opt/oracle/oradata
+      - ./oracle/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo 'select 1 from dual;' | sqlplus -s system/oracle@localhost:1521/XEPDB1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
 
   php:
     image: jorgeingresa/ingresa:8.2
@@ -24,8 +30,26 @@ services:
       DB_PASS: oracle
       DB_HOST: oracle
       DB_PORT: 1521
+      DB_SERVICE: XEPDB1
+    depends_on:
+      oracle:
+        condition: service_healthy
+
+  cloudbeaver:
+    image: dbeaver/cloudbeaver:latest
+    container_name: cloudbeaver
+    ports:
+      - "8978:8978"
+    environment:
+      CB_SERVER_NAME: "Prueba Tecnica Oracle"
+      CB_ADMIN_NAME: admin
+      CB_ADMIN_PASSWORD: admin123
+      CB_STANDALONE: "true"
+    volumes:
+      - cloudbeaver_data:/opt/cloudbeaver/workspace
     depends_on:
       - oracle
 
 volumes:
   oracle_data:
+  cloudbeaver_data:
