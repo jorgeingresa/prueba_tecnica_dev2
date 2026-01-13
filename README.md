@@ -41,3 +41,11 @@ localhost:8978
 - JDBC URL : jdbc:oracle:thin:@//oracle:1521/XEPDB1
 - USER : PRUEBA
 - PASS : PRUEBA
+
+# RESULTADO ESPERADO 
+
+| ID | Nombre       | Categoría      |
+|----|--------------|----------------|
+| 1  | Juan Pérez   | Premium        |
+| 2  | Ana Gómez    | Sin categoría  |
+| 3  | Pedro Soto   | Sin categoría  |

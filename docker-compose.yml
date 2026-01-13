@@ -24,7 +24,7 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./php/index.php:/var/www/html/index.php
+      - ./php/:/var/www/html/
     environment:
       DB_USER: system
       DB_PASS: oracle
