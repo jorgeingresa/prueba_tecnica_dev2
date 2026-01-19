@@ -19,7 +19,7 @@ git clone git@github.com:jorgeingresa/prueba_tecnica_dev2.git
 docker compose up --build
 ```
 
-- El servidor se despliega en **localhost:8080**
+### El servidor se despliega en **localhost:8080**
 
 ## Uso de cliente cloudbeaver
 
