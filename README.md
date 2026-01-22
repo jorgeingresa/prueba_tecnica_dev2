@@ -10,7 +10,7 @@
 ## Clonar el repositorio
 
 ```bash
-git clone git@github.com:jorgeingresa/prueba_tecnica_dev2.git
+git clone https://github.com/jorgeingresa/prueba_tecnica_dev2.git
 ```
 
 ## Levantar Entorno
